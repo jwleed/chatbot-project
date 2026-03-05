@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>대학 공지 안내 비서</title>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        #chat-container { max-width: 500px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
+        #chat-header { background: #007bff; color: white; padding: 15px; text-align: center; font-weight: bold; }
+        #chat-box { height: 400px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .message { max-width: 80% ; padding: 10px; border-radius: 10px; font-size: 14px; line-height: 1.4; }
+        .user { align-self: flex-end; background: #007bff; color: white; }
+        .bot { align-self: flex-start; background: #e9ecef; color: #333; white-space: pre-wrap; }
+        #input-area { display: flex; padding: 15px; border-top: 1px solid #ddd; }
+        #user-input { flex: 1; border: 1px solid #ddd; border-radius: 5px; padding: 10px; outline: none; }
+        #send-btn { background: #007bff; color: white; border: none; padding: 10px 15px; margin-left: 5px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div id="chat-header">🏫 대학 공지 안내 비서</div>
+    <div id="chat-box">
+        <div class="message bot">안녕하세요! 궁금한 공지사항을 물어보세요.</div>
+    </div>
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="질문을 입력하세요...">
+        <button id="send-btn">전송</button>
+    </div>
+</div>
+
+<script>
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    async function sendMessage() {
+        const question = userInput.value.trim();
+        if (!question) return;
+
+        // 사용자 메시지 추가
+        addMessage(question, 'user');
+        userInput.value = '';
+
+        try {
+            // API 호출 (팀장님이 만든 컨트롤러 주소)
+            const response = await fetch(`/api/chatbot/ask?question=${encodeURIComponent(question)}`);
+            const data = await response.text();
+
+            // 봇 메시지 추가
+            addMessage(data, 'bot');
+        } catch (error) {
+            addMessage("에러가 발생했습니다: " + error.message, 'bot');
+        }
+    }
+
+    function addMessage(text, sender) {
+        const div = document.createElement('div');
+        div.classList.add('message', sender);
+        div.innerText = text;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight; // 스크롤 하단 이동
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
+</script>
+
+</body>
+</html>
