@@ -31,8 +31,12 @@ public class NoticeServiceImpl implements NoticeService {
         entity.setDate(date);
         entity.setUrl(url);
 
-        NoticeEntity saved = noticeRepository.save(entity);
-        System.out.println("DB 저장 성공 ID: " + saved.getId()); // 저장 후 ID 확인
+        try {
+            NoticeEntity saved = noticeRepository.save(entity);
+            System.out.println("DB 저장 성공 ID: " + saved.getId());
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            System.out.println("중복 공지 스킵: " + title);
+        }
     }
 
     @Override
