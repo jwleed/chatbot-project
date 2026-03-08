@@ -10,5 +10,5 @@ import java.util.List;
 public interface NoticeRepository extends JpaRepository<NoticeEntity, Long> {
 
     List<NoticeEntity> findByTitleContainingOrderByDateDesc(String keyword);
-
+    boolean existsByTitleAndDate(String title, String date);
 }

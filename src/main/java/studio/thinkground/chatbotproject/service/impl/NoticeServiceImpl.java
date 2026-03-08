@@ -25,18 +25,20 @@ public class NoticeServiceImpl implements NoticeService {
 
         System.out.println("받은 제목: " + title);
 
+        // 저장 전에 미리 중복 체크
+        if (noticeRepository.existsByTitleAndDate(title, date)) {
+            System.out.println("중복 공지 스킵: " + title);
+            return;
+        }
+
         NoticeEntity entity = new NoticeEntity();
         entity.setTitle(title);
         entity.setContent(content);
         entity.setDate(date);
         entity.setUrl(url);
 
-        try {
-            NoticeEntity saved = noticeRepository.save(entity);
-            System.out.println("DB 저장 성공 ID: " + saved.getId());
-        } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            System.out.println("중복 공지 스킵: " + title);
-        }
+        NoticeEntity saved = noticeRepository.save(entity);
+        System.out.println("DB 저장 성공 ID: " + saved.getId());
     }
 
     @Override
