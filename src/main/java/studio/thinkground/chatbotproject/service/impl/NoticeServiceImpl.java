@@ -25,7 +25,7 @@ public class NoticeServiceImpl implements NoticeService {
 
         System.out.println("받은 제목: " + title);
 
-        // 저장 전에 미리 중복 체크
+        // 저장 전에 중복 체크
         if (noticeRepository.existsByTitleAndDate(title, date)) {
             System.out.println("중복 공지 스킵: " + title);
             return;
@@ -47,7 +47,7 @@ public class NoticeServiceImpl implements NoticeService {
         List<NoticeEntity> notices = noticeRepository.findByTitleContainingOrderByDateDesc(keyword);
 
         StringBuilder prompt = new  StringBuilder();
-        prompt.append("너는 너는 대학 공지 안내 비서야. 제공된 정보로만 정확하고 친절하게 답해줘.\n\n");
+        prompt.append("너는 대학 공지 안내하는 사람이야. 제공된 정보로만 정확하고 친절하게 대답을해줘.\n\n");
 
         for (NoticeEntity n : notices) {
             prompt.append("[공지] ").append(n.getTitle()).append("\n내용: ").append(n.getContent()).append("\n\n");
